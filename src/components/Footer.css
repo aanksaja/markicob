@@ -1,0 +1,8 @@
+.footer {
+  background-color: #f8f8f8;
+  color: #333;
+  padding: 1rem 0;
+  text-align: center;
+  border-top: 1px solid #eee;
+  margin-top: auto; /* Untuk menempatkan footer di bagian bawah halaman */
+}
