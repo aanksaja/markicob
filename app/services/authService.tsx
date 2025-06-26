@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api'; // Sesuaikan dengan endpoint API Anda
+const API_URL = 'http://localhost:3000/api'; // Sesuaikan dengan endpoint API Anda
 
 interface Credentials {
   username: string;

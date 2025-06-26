@@ -2,7 +2,7 @@ import axios from "axios";
 // import { authService } from './authService';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3000/api',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
