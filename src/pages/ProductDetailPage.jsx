@@ -9,7 +9,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { authToken, isLoggedIn } = useAuth();
+  const { authToken, isLoggedIn, setRedirectPath } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -85,6 +85,7 @@ const ProductDetailPage = () => {
 
   const handleAddToCart = async () => {
     if (!isLoggedIn) {
+      setRedirectPath(location.pathname);
       alert('Please login to add items to cart');
       navigate('/login');
       return;
@@ -122,7 +123,7 @@ const ProductDetailPage = () => {
     // Add to cart and navigate to checkout
     handleAddToCart();
     setTimeout(() => {
-      navigate('/checkout');
+      navigate('/cart');
     }, 1000);
   };
 

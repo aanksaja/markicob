@@ -105,6 +105,8 @@ const TransactionListPage = () => {
       if (err.response && err.response.status === 401) {
         setError('Your session has expired. Please login again.');
         logout();
+        localStorage.removeItem('authToken');
+        navigate('/login');
       } else {
         setError('Failed to load transactions. Please try again later.');
       }

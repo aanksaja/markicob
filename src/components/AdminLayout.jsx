@@ -1,68 +1,74 @@
-// src/components/AdminLayout.jsx
 import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // Sesuaikan path jika berbeda
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import AdminMenu from './AdminMenu';
+import './AdminStyles.css';
 
 const AdminLayout = () => {
-  const { logout } = useAuth();
+  const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/login'); // Redirect ke halaman login setelah logout
+    navigate('/login');
   };
 
   return (
-    <div className="flex flex-col min-h-screen font-sans">
-      {/* Header Admin */}
-      <header className="bg-gray-800 text-white p-4 shadow-md flex justify-between items-center rounded-b-lg">
-        <h1 className="text-3xl font-bold tracking-wide">Admin Panel</h1>
-        <nav>
-          <ul className="flex space-x-6 text-lg">
-            <li>
-              <Link to="/admin" className="hover:text-blue-400 transition duration-300 ease-in-out">
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link to="/admin/users" className="hover:text-blue-400 transition duration-300 ease-in-out">
-                Manajemen Pengguna
-              </Link>
-            </li>
-            <li>
-              <Link to="/admin/products" className="hover:text-blue-400 transition duration-300 ease-in-out">
-                Manajemen Produk
-              </Link>
-            </li>
-            <li>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out shadow-lg"
-              >
-                Logout
-              </button>
-            </li>
-            <li>
-              <Link
-                to="/"
-                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full transition duration-300 ease-in-out shadow-lg"
-              >
-                Ke Situs Utama
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
+    <div className="admin-layout">
+      <AdminMenu />
 
-      {/* Main Content Area */}
-      <main className="flex-grow p-6 bg-gray-50">
-        <Outlet /> {/* Ini akan merender komponen anak yang cocok */}
-      </main>
+      <div className="admin-content">
+        {/* Header */}
+        <header
+          style={{
+            backgroundColor: '#f8f9fa',
+            padding: '20px',
+            borderBottom: '2px solid #e9ecef',
+            marginBottom: '20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <h1
+              style={{
+                fontSize: '24px',
+                fontWeight: '600',
+                color: '#212529',
+                margin: '0',
+              }}
+            >
+              Admin Panel
+            </h1>
+            <p
+              style={{
+                color: '#6c757d',
+                margin: '5px 0 0 0',
+              }}
+            >
+              Welcome back, {currentUser?.name || 'Admin'}
+            </p>
+          </div>
 
-      {/* Footer Admin */}
-      <footer className="bg-gray-800 text-white p-4 text-center rounded-t-lg">
-        <p className="text-sm">&copy; 2024 Admin Panel. All rights reserved.</p>
-      </footer>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              onClick={() => navigate('/')}
+              className="btn btn-secondary btn-sm"
+            >
+              Go to Site
+            </button>
+            <button onClick={handleLogout} className="btn btn-danger btn-sm">
+              Logout
+            </button>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main>
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

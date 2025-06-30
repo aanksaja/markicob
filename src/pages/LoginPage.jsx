@@ -13,7 +13,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth(); // Dapatkan fungsi login dari AuthContext
+  const { login, getRedirectPath, clearRedirectPath } = useAuth(); // Dapatkan fungsi login dari AuthContext
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,10 +35,19 @@ const Login = () => {
         // localStorage.setItem('userData', JSON.stringify(data.user));
 
         // Panggil fungsi login dari AuthContext dengan token dan data user sebagai argumen
-        login(data.token, data.user);
+        // login(data.token, data.user);
+        const success = login(data.token, data.user);
+        const redirectPath = getRedirectPath();
+        if (redirectPath) {
+          navigate(redirectPath, { replace: true }); // Arahkan ke path yang disimpan
+        } else {
+          // Default ke homepage jika tidak ada path yang disimpan
+          navigate('/', { replace: true });
+        }
+        clearRedirectPath();
 
-        alert('Login Berhasil!');
-        navigate('/'); // Redirect ke halaman Home
+        // alert('Login Berhasil!');
+        // navigate('/'); // Redirect ke halaman Home
       } else {
         throw new Error(
           'Login berhasil, tetapi token atau data user tidak ditemukan dalam respons.',

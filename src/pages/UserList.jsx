@@ -73,8 +73,8 @@ const UserList = () => {
           setTotalUsers(0);
         }
       } catch (err) {
-        console.error('Error fetching users:', err);
-        setError('Failed to load users. Please try again later.');
+        // console.error('Error fetching users:', err);
+        // setError('Failed to load users. Please try again later.');
         setUsers([]);
         setTotalUsers(0);
       } finally {

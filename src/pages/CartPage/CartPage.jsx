@@ -17,12 +17,13 @@ const CartPage = () => {
 
   // Calculate totals
   const calculateTotals = useCallback(() => {
-    const subtotal = cartItems.reduce((total, item) => {
-      const quantity = quantities[item.id] || item.quantity;
-      return total + item.item.amount * quantity;
+    const subtotal = cartItems.reduce((total, cartItem) => {
+      const quantity = quantities[cartItem.id] || cartItem.quantity;
+      // return total + cartItem.item.price * quantity;
+      return 0;
     }, 0);
 
-    const shipping = subtotal > 0 ? 50000 : 0; // Free shipping over certain amount
+    const shipping = subtotal > 0 ? 50000 : 0; // Free shipping over certain price
     const tax = subtotal * 0.1; // 10% tax
     const total = subtotal + shipping + tax;
 
@@ -36,6 +37,15 @@ const CartPage = () => {
       return;
     }
 
+    // If no API URL configured, show empty cart
+    if (!API_BASE_URL) {
+      console.warn('API not configured, showing empty cart');
+      setCartItems([]);
+      setQuantities({});
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -45,23 +55,30 @@ const CartPage = () => {
         },
       });
 
-      setCartItems(response.data.cart_items || []);
+      setCartItems(response.data.data || []);
 
       // Initialize quantities state
       const initialQuantities = {};
-      response.data.cart_items?.forEach((item) => {
+      response.data.data?.forEach((item) => {
         initialQuantities[item.id] = item.quantity;
       });
       setQuantities(initialQuantities);
     } catch (err) {
-      console.error('Error fetching cart items:', err);
+      console.warn('Cart API error:', err.message);
       if (err.response && err.response.status === 401) {
         setError('Your session has expired. Please login again.');
         logout();
+        localStorage.removeItem('authToken');
+        navigate('/login');
+      } else if (err.response?.status === 404) {
+        // API not available, show empty cart without error
+        console.warn('Cart API not available, showing empty cart');
+        setCartItems([]);
+        setQuantities({});
       } else {
         setError('Failed to load cart. Please try again later.');
+        setCartItems([]);
       }
-      setCartItems([]);
     } finally {
       setLoading(false);
     }
@@ -84,7 +101,7 @@ const CartPage = () => {
     ) {
       setUpdatingItems((prev) => new Set(prev).add(cartItemId));
       try {
-        await axios.delete(`${API_BASE_URL}/cart/delete/${cartItemId}`, {
+        await axios.delete(`${API_BASE_URL}/cart/delete?ids=${cartItemId}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -95,6 +112,8 @@ const CartPage = () => {
         if (err.response && err.response.status === 401) {
           alert('Your session has expired. Please login again.');
           logout();
+          localStorage.removeItem('authToken');
+          navigate('/login');
         } else {
           alert('Failed to remove item from cart. Please try again.');
         }
@@ -149,6 +168,8 @@ const CartPage = () => {
       if (err.response && err.response.status === 401) {
         alert('Your session has expired. Please login again.');
         logout();
+        localStorage.removeItem('authToken');
+        navigate('/login');
       } else {
         alert('Failed to update cart item. Please try again.');
       }
@@ -260,7 +281,7 @@ const CartPage = () => {
                   <h3 className="item-name">{cartItem.item.name}</h3>
                   <p className="item-category">{cartItem.item.category}</p>
                   <p className="item-price">
-                    Rp {cartItem.item.amount.toLocaleString('id-ID')}
+                    Rp {cartItem.item.price.toLocaleString('id-ID')}
                   </p>
                   <p className="item-stock">In Stock</p>
                 </div>
@@ -327,7 +348,7 @@ const CartPage = () => {
                 <div className="item-total">
                   <p className="total-price">
                     Rp{' '}
-                    {(cartItem.item.amount * currentQuantity).toLocaleString(
+                    {(cartItem.item.price * currentQuantity).toLocaleString(
                       'id-ID',
                     )}
                   </p>

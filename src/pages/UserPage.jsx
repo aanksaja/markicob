@@ -36,6 +36,7 @@ const User = () => {
             // Opsional: panggil logout() dari useAuth jika token benar-benar expired
             const { logout } = useAuth();
             logout();
+            localStorage.removeItem('authToken');
             navigate('/login');
           } else {
             setError(

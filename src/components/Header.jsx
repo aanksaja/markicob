@@ -21,6 +21,19 @@ const Header = () => {
     const fetchCategories = async () => {
       setLoadingCategories(true);
       setErrorCategories(null);
+
+      // If no API URL configured, use default categories
+      if (!API_BASE_URL) {
+        setCategories([
+          'Semua Kategori',
+          'Electronics',
+          'Furniture',
+          'Clothing',
+        ]);
+        setLoadingCategories(false);
+        return;
+      }
+
       try {
         const response = await axios.get(`${API_BASE_URL}/items/categories`);
         const apiCategories = response.data.data || [];
@@ -31,9 +44,20 @@ const Header = () => {
         ];
         setCategories(uniqueCategories);
       } catch (err) {
-        console.error('Error fetching categories:', err);
-        setErrorCategories('Gagal memuat kategori.');
-        setCategories(['Semua Kategori']);
+        console.warn(
+          'Categories API not available, using default categories:',
+          err.message,
+        );
+        setCategories([
+          'Semua Kategori',
+          'Electronics',
+          'Furniture',
+          'Clothing',
+        ]);
+        // Only show error if it's not a 404 (API unavailable)
+        if (err.response?.status !== 404) {
+          setErrorCategories('Gagal memuat kategori.');
+        }
       } finally {
         setLoadingCategories(false);
       }
@@ -184,62 +208,7 @@ const Header = () => {
 
             {isLoggedIn && (
               <>
-                <li
-                  className="nav-item dropdown-container"
-                  onMouseEnter={() => setIsUsersDropdownOpen(true)}
-                  onMouseLeave={() => setIsUsersDropdownOpen(false)}
-                >
-                  <button
-                    className="nav-link dropdown-trigger"
-                    aria-expanded={isUsersDropdownOpen}
-                    aria-haspopup="true"
-                  >
-                    <span className="nav-icon">👥</span>
-                    Users
-                    <svg
-                      className={`dropdown-arrow ${isUsersDropdownOpen ? 'rotated' : ''}`}
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                    >
-                      <path
-                        d="M3 4.5L6 7.5L9 4.5"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-
-                  <div
-                    className={`dropdown-menu ${isUsersDropdownOpen ? 'open' : ''}`}
-                    role="menu"
-                  >
-                    <div className="dropdown-content">
-                      <Link
-                        to="/users/list"
-                        className="dropdown-item"
-                        onClick={handleLinkClick}
-                        role="menuitem"
-                      >
-                        <span className="menu-icon">📋</span>
-                        List Users
-                      </Link>
-                      <Link
-                        to="/users/add"
-                        className="dropdown-item"
-                        onClick={handleLinkClick}
-                        role="menuitem"
-                      >
-                        <span className="menu-icon">➕</span>
-                        Add User
-                      </Link>
-                    </div>
-                  </div>
-                </li>
-
+               
                 <li className="nav-item">
                   <Link
                     to="/cart"

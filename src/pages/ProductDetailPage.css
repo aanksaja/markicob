@@ -318,12 +318,12 @@
   padding-top: 2rem;
 }
 
-.quantity-selector {
+/* .quantity-selector {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
-}
+} */
 
 .quantity-label {
   font-weight: 600;
