@@ -29,11 +29,18 @@ const ItemsPage = () => {
     is_active: 1,
   });
 
-  // Fetch items from API
+  // Fetch items from API with pagination and search
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/items/list`, {
+      const offset = (currentPage - 1) * itemsPerPage;
+      let url = `${API_BASE_URL}/items/list?limit=${itemsPerPage}&offset=${offset}`;
+
+      if (searchQuery.trim()) {
+        url += `&search=${encodeURIComponent(searchQuery.trim())}`;
+      }
+
+      const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -41,13 +48,16 @@ const ItemsPage = () => {
 
       if (response.data && response.data.data) {
         setItems(response.data.data);
+        setTotalItems(response.data.meta?.total || 0);
       } else {
         setItems([]);
+        setTotalItems(0);
       }
     } catch (error) {
       console.error('Error fetching items:', error);
       alert('Failed to fetch items. Please try again.');
       setItems([]);
+      setTotalItems(0);
     } finally {
       setLoading(false);
     }
