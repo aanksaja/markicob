@@ -96,7 +96,7 @@ const CartPage = () => {
 
     if (
       window.confirm(
-        'Are you sure you want to remove this item from your cart?',
+        'Are you sure you want to remove this item from your cart?'
       )
     ) {
       setUpdatingItems((prev) => new Set(prev).add(cartItemId));
@@ -160,7 +160,7 @@ const CartPage = () => {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
-        },
+        }
       );
       await fetchCartItems();
     } catch (err) {
@@ -187,8 +187,11 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    // Implement checkout functionality
-    alert('Checkout functionality will be implemented soon!');
+    if (cartItems.length === 0) {
+      alert('Your cart is empty. Please add items before checkout.');
+      return;
+    }
+    navigate('/checkout');
   };
 
   if (loading) {
@@ -306,7 +309,7 @@ const CartPage = () => {
                         onChange={(e) =>
                           handleUpdateQuantity(
                             cartItem.id,
-                            parseInt(e.target.value) || 1,
+                            parseInt(e.target.value) || 1
                           )
                         }
                         min="1"
@@ -349,7 +352,7 @@ const CartPage = () => {
                   <p className="total-price">
                     Rp{' '}
                     {(cartItem.item.price * currentQuantity).toLocaleString(
-                      'id-ID',
+                      'id-ID'
                     )}
                   </p>
                 </div>
