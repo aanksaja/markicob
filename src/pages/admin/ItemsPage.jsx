@@ -67,7 +67,28 @@ const ItemsPage = () => {
     if (authToken) {
       fetchItems();
     }
-  }, [authToken]);
+  }, [authToken, currentPage, itemsPerPage, searchQuery]);
+
+  // Handle search
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setCurrentPage(1); // Reset to first page when searching
+    fetchItems();
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchClear = () => {
+    setSearchQuery('');
+    setCurrentPage(1);
+  };
+
+  // Pagination helpers
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
