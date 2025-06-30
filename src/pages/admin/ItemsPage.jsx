@@ -216,13 +216,46 @@ const ItemsPage = () => {
 
       <div className="admin-card">
         <div className="card-header">
-          <h2 className="card-title">Items List ({items.length} items)</h2>
-          <button
-            className="btn btn-primary"
-            onClick={() => setShowModal(true)}
-          >
-            Add New Item
-          </button>
+          <div className="header-left">
+            <h2 className="card-title">
+              Items List ({totalItems} total items)
+            </h2>
+            <p className="items-info">
+              Showing {totalItems > 0 ? startItem : 0} - {endItem} of{' '}
+              {totalItems} items
+            </p>
+          </div>
+          <div className="header-right">
+            <form onSubmit={handleSearch} className="search-form">
+              <div className="search-input-group">
+                <input
+                  type="text"
+                  placeholder="Search items..."
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                  className="search-input"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={handleSearchClear}
+                    className="search-clear-btn"
+                  >
+                    ×
+                  </button>
+                )}
+                <button type="submit" className="search-btn">
+                  🔍
+                </button>
+              </div>
+            </form>
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowModal(true)}
+            >
+              Add New Item
+            </button>
+          </div>
         </div>
 
         <div className="table-responsive">
