@@ -1,13 +1,13 @@
 import React from 'react';
 import SearchForm from '../SearchForm';
 
-const ProductsHeader = ({ 
-  selectedCategory, 
-  searchQuery, 
-  onSearch, 
-  searchSuggestions, 
-  showSuggestions, 
-  onSearchInputChange 
+const ProductsHeader = ({
+  selectedCategory,
+  searchQuery,
+  onSearch,
+  searchSuggestions,
+  showSuggestions,
+  onSearchInputChange,
 }) => {
   return (
     <div className="products-header">
@@ -40,7 +40,7 @@ const ProductsHeader = ({
                 strokeLinejoin="round"
               />
             </svg>
-            <SearchForm />
+            <SearchForm onSearch={onSearch} />
             {searchQuery && (
               <button className="search-clear" onClick={() => onSearch('')}>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -78,7 +78,6 @@ const ProductsHeader = ({
             </div>
           )}
         </div>
-        
       </div>
     </div>
   );

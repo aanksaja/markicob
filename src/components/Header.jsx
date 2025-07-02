@@ -67,7 +67,12 @@ const Header = () => {
   }, []);
 
   const handleCategoryClick = (category) => {
-    navigate(`/products?category=${encodeURIComponent(category)}`);
+    // If "Semua Kategori" is clicked, navigate to products without category filter
+    if (category === 'Semua Kategori') {
+      navigate('/products');
+    } else {
+      navigate(`/products?category=${encodeURIComponent(category)}`);
+    }
     setIsProductsDropdownOpen(false);
     setIsMobileMenuOpen(false);
   };
